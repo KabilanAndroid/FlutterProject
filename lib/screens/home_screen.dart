@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ro_shops/providers/mainprovider.dart';
-import 'package:ro_shops/screens/login_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -45,11 +44,12 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: () => Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                    (route) => false,
-                  ),
+                  onPressed: () {
+                    ref.read(isLoggedInProvider.notifier).state = false;
+                    ref.read(usernameProvider.notifier).state = '';
+                    ref.read(idProvider.notifier).state = '';
+                    ref.read(emailProvider.notifier).state = '';
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple,
                     minimumSize: const Size(double.infinity, 52),

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ro_shops/config.dart';
 import 'package:ro_shops/providers/mainprovider.dart';
-import 'package:ro_shops/screens/home_screen.dart';
-import 'package:ro_shops/screens/signup_screen.dart';
 import 'package:ro_shops/widgets/responsive_layout.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -40,14 +38,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
         if (mounted) {
           if (response.statusCode == 200) {
-            print("reasponse: ${response.data['user']['id']}");
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('response:${response.data['name']}'), backgroundColor: Colors.green),
-            );
+            debugPrint(response.data.toString());
             ref.read(usernameProvider.notifier).state = response.data['user']['name'];
             ref.read(idProvider.notifier).state = response.data['user']['id'];
             ref.read(emailProvider.notifier).state = response.data['user']['email'];
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            ref.read(isLoggedInProvider.notifier).state = true;
           }
         }
       } catch (e) {
@@ -114,10 +109,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             children: [
               const Text("Don't have an account?"),
               TextButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignupScreen()),
-                ),
+                onPressed: () => Navigator.pushNamed(context, '/signup'),
                 child: const Text('Sign Up', style: TextStyle(color: Colors.deepPurple)),
               ),
             ],
