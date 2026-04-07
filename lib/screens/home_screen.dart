@@ -56,24 +56,21 @@ class HomeScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(padding:  EdgeInsets.symmetric(vertical: 8.0)),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
                     Text(
                       "Hello, $username",
                       style: TextStyle(
-                        fontSize: 24,       
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
-                    ), 
+                    ),
                     Text(
                       "Enjoy your services",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
-                    Padding(padding:  EdgeInsets.symmetric(vertical: 6.0)),
-                    
+                    Padding(padding: EdgeInsets.symmetric(vertical: 6.0)),
+
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -195,12 +192,24 @@ class HomeScreen extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    ListView.builder(
+                    GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: data.length,
+                      itemCount: 10,
+                      padding: EdgeInsets.symmetric(horizontal: isWide ? 32.0 : 16.0) ,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
                       itemBuilder: (context, index) {
-                        return ListTile(title: Text(data[index]['name']));
+                        return Container(
+                          decoration: BoxDecoration(
+                            color:Color.fromARGB(255, 76, 35, 226) ,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Center(child: Text("Item $index")),
+                        );
                       },
                     ),
                   ],
