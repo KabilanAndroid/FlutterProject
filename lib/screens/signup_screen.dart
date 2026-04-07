@@ -78,8 +78,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLayout(
-      child: Column(
+    return Scaffold(
+      body: ResponsiveLayout(
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -142,6 +143,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ],
           ),
         ],
+        ),
       ),
     );
   }

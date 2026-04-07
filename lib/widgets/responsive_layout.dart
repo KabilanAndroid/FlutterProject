@@ -8,33 +8,30 @@ class ResponsiveLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final isWide = width >= 600;
-    debugPrint("width:${width}");
 
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            width: isWide ? 480 : double.infinity,
-            margin: isWide ? const EdgeInsets.symmetric(vertical: 40) : EdgeInsets.zero,
-            padding: EdgeInsets.symmetric(
-              horizontal: isWide ? 48 : 32,
-              vertical: 40,
-            ),
-            decoration: isWide
-                ? BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 24,
-                        offset: Offset(0, 8),
-                      ),
-                    ],
-                  )
-                : null,
-            child: child,
+    return Center(
+      child: SingleChildScrollView(
+        child: Container(
+          width: isWide ? 480 : double.infinity,
+          margin: isWide ? const EdgeInsets.symmetric(vertical: 40) : EdgeInsets.zero,
+          padding: EdgeInsets.symmetric(
+            horizontal: isWide ? 48 : 32,
+            vertical: 40,
           ),
+          decoration: isWide
+              ? BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 24,
+                      offset: Offset(0, 8),
+                    ),
+                  ],
+                )
+              : null,
+          child: child,
         ),
       ),
     );

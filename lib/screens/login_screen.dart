@@ -1,24 +1,26 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ro_shops/config.dart';
+import 'package:ro_shops/providers/mainprovider.dart';
 import 'package:ro_shops/screens/home_screen.dart';
 import 'package:ro_shops/screens/signup_screen.dart';
 import 'package:ro_shops/widgets/responsive_layout.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final dio = Dio();
 
   String get _baseUrl => AppConfig.baseUrl;
-
   @override
   void dispose() {
     emailController.dispose();
@@ -41,6 +43,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Login successful'), backgroundColor: Colors.green),
             );
+            ref.read(usernameProvider.notifier).state = emailController.text.toString();
+
             Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
           }
         }
@@ -60,8 +64,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLayout(
-      child: Column(
+    final username = ref.watch(usernameProvider);
+    debugPrint('username: $username');
+    return Scaffold(
+      body: ResponsiveLayout(
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -115,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ],
+        ),
       ),
     );
   }
