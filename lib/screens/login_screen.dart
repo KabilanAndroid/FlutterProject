@@ -39,6 +39,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           if (response.statusCode == 200) {
             debugPrint(response.data.toString());
+            final prefs = ref.read(sharedPreferencesProvider);
+            await prefs.setString('username', response.data['user']['name']);
+            await prefs.setString('id', response.data['user']['id']);
+            await prefs.setString('email', response.data['user']['email']);
+            await prefs.setBool('isLoggedIn', true);
             ref.read(usernameProvider.notifier).state = response.data['user']['name'];
             ref.read(idProvider.notifier).state = response.data['user']['id'];
             ref.read(emailProvider.notifier).state = response.data['user']['email'];
