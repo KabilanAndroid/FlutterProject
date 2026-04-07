@@ -40,11 +40,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
         if (mounted) {
           if (response.statusCode == 200) {
+            print("reasponse: ${response.data['user']['id']}");
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Login successful'), backgroundColor: Colors.green),
+              SnackBar(content: Text('response:${response.data['name']}'), backgroundColor: Colors.green),
             );
-            ref.read(usernameProvider.notifier).state = emailController.text.toString();
-
+            ref.read(usernameProvider.notifier).state = response.data['user']['name'];
+            ref.read(idProvider.notifier).state = response.data['user']['id'];
+            ref.read(emailProvider.notifier).state = response.data['user']['email'];
             Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
           }
         }
@@ -64,8 +66,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final username = ref.watch(usernameProvider);
-    debugPrint('username: $username');
+
     return Scaffold(
       body: ResponsiveLayout(
         child: Column(

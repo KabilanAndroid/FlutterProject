@@ -11,7 +11,8 @@ class HomeScreen extends ConsumerWidget {
     final width = MediaQuery.of(context).size.width;
     final isWide = width >= 600;
     final username = ref.watch(usernameProvider);
-    debugPrint('username: $username');
+    final email = ref.watch(emailProvider);
+    final id = ref.watch(idProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Screen'),
@@ -29,6 +30,16 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Text(
                   'Welcome, $username!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'email:, $email!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                 Text(
+                  'id:, $id!',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
