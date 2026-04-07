@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ro_shops/config.dart';
 import 'package:ro_shops/screens/login_screen.dart';
+import 'package:ro_shops/widgets/responsive_layout.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -10,17 +12,18 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController emailcontroller = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmpassController = TextEditingController();
-
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmpassController = TextEditingController();
   final dio = Dio();
+
+  String get _baseUrl => AppConfig.baseUrl;
 
   @override
   void dispose() {
     usernameController.dispose();
-    emailcontroller.dispose();
+    emailController.dispose();
     passwordController.dispose();
     confirmpassController.dispose();
     super.dispose();
@@ -28,18 +31,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool validate() {
     if (usernameController.text.isEmpty ||
-        emailcontroller.text.isEmpty ||
+        emailController.text.isEmpty ||
         passwordController.text.isEmpty ||
         confirmpassController.text.isEmpty) {
       return false;
     }
-    if (passwordController.text != confirmpassController.text) {
-      return false;
-    }
+    if (passwordController.text != confirmpassController.text) return false;
     return true;
   }
-
-  static const String _baseUrl = 'http://10.0.2.2:5000';
 
   void handlesignup() async {
     if (validate()) {
@@ -48,153 +47,101 @@ class _SignupScreenState extends State<SignupScreen> {
           '$_baseUrl/api/auth/signup',
           data: {
             'name': usernameController.text,
-            'email': emailcontroller.text,
+            'email': emailController.text,
             'password': passwordController.text,
           },
         );
         if (mounted) {
-          if (response.data['message'] == "User registered successfully") {
-           Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-          }
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(response.data['message'] ?? 'Signup successful!'),
               backgroundColor: Colors.green,
             ),
           );
+          if (response.data['message'] == 'User registered successfully') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+          }
         }
       } catch (error) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Signup failed'),
-              backgroundColor: Colors.red,
-            ),
+            const SnackBar(content: Text('Signup failed'), backgroundColor: Colors.red),
           );
         }
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill all fields correctly'),
-          backgroundColor: Colors.orange,
-        ),
+        const SnackBar(content: Text('Please fill all fields correctly'), backgroundColor: Colors.orange),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                'Sign up',
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-              ),
+    return ResponsiveLayout(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(bottom: 32),
+            child: Text(
+              'Sign Up',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: TextField(
-                controller: usernameController,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.deepPurple, width: 2),
-                  ),
-                  hintText: 'username',
-                ),
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: TextField(
+              controller: usernameController,
+              decoration: responsiveInputDecoration('Username'),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: TextField(
-                controller: emailcontroller,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.deepPurple, width: 2),
-                  ),
-                  hintText: 'email',
-                ),
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: TextField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: responsiveInputDecoration('Email'),
             ),
-
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.deepPurple, width: 2),
-                  ),
-
-                  hintText: 'password',
-                ),
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: responsiveInputDecoration('Password'),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: TextField(
-                controller: confirmpassController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.deepPurple, width: 2),
-                  ),
-                  hintText: 'confirm password',
-                ),
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: TextField(
+              controller: confirmpassController,
+              obscureText: true,
+              decoration: responsiveInputDecoration('Confirm Password'),
             ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: ElevatedButton(
-                onPressed: handlesignup,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: const Text(
-                  'Signup',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+          ),
+          ElevatedButton(
+            onPressed: handlesignup,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.deepPurple,
+              minimumSize: const Size(double.infinity, 52),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             ),
-          ],
-        ),
+            child: const Text('Sign Up', style: TextStyle(color: Colors.white, fontSize: 16)),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Already have an account?'),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Login', style: TextStyle(color: Colors.deepPurple)),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
