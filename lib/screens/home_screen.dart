@@ -5,7 +5,6 @@ import 'package:ro_shops/providers/mainprovider.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
-  // Breakpoints
   static const double _tablet = 600;
   static const double _desktop = 1200;
 
@@ -24,6 +23,7 @@ class HomeScreen extends ConsumerWidget {
     final username = ref.watch(usernameProvider);
     final email = ref.watch(emailProvider);
     final id = ref.watch(idProvider);
+    final productsAsync = ref.watch(productsProvider);
 
     Widget content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,31 +175,74 @@ class HomeScreen extends ConsumerWidget {
                 ),
 
                 // Grid
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 10,
-                  padding: EdgeInsets.symmetric(horizontal: hPad),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: _gridCols(width),
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: isDesktop ? 1.2 : 1.0,
+                productsAsync.when(
+                  loading: () => const Padding(
+                    padding: EdgeInsets.all(32),
+                    child: Center(child: CircularProgressIndicator()),
                   ),
-                  itemBuilder: (context, index) => Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 76, 35, 226),
-                      borderRadius: BorderRadius.circular(12),
+                  error: (e, _) => Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Center(child: Text('Failed to load products: $e')),
+                  ),
+                  data: (products) => GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: products.length,
+                    padding: EdgeInsets.symmetric(horizontal: hPad),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: _gridCols(width),
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: isDesktop ? 0.75 : 0.65,
                     ),
-                    child: Center(
-                      child: Text(
-                        "Item $index",
-                        style: TextStyle(
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+                      return Container(
+                        decoration: BoxDecoration(
                           color: Colors.white,
-                          fontSize: isDesktop ? 16 : 14,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: const [BoxShadow(blurRadius: 4, color: Colors.black12)],
                         ),
-                      ),
-                    ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                                child: Image.network(
+                                  product.image,
+                                  fit: BoxFit.contain,
+                                  width: double.infinity,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: isDesktop ? 13 : 11),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '\$${product.price.toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      fontSize: isDesktop ? 14 : 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color.fromARGB(255, 76, 35, 226),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(height: 16),

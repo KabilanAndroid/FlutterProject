@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ro_shops/models/product_model.dart';
+import 'package:ro_shops/services/product_service.dart';
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError('SharedPreferences not initialized');
@@ -19,4 +21,8 @@ final idProvider = StateProvider<String>((ref) {
 
 final emailProvider = StateProvider<String>((ref) {
   return ref.watch(sharedPreferencesProvider).getString('email') ?? '';
+});
+
+final productsProvider = FutureProvider<List<Product>>((ref) {
+  return ProductService().getProducts();
 });
