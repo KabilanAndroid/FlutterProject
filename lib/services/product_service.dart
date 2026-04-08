@@ -5,10 +5,9 @@ import 'package:ro_shops/models/product_model.dart';
 class ProductService {
   final _dio = Dio();
 
-  String get _baseUrl => AppConfig.baseUrl;
-
   Future<List<Product>> getProducts() async {
-    final response = await _dio.get('$_baseUrl/api/products');
-    return (response.data as List).map((e) => Product.fromJson(e)).toList();
+    final response = await _dio.get('${AppConfig.baseUrl}/api/products');
+    final List data = response.data['products'];
+    return data.map((e) => Product.fromJson(e)).toList();
   }
 }

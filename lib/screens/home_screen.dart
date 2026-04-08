@@ -15,6 +15,20 @@ class HomeScreen extends ConsumerWidget {
   double _bannerTitleSize(double w) => w >= _desktop ? 22 : 16;
   double _bannerBodySize(double w) => w >= _desktop ? 15 : 12;
 
+  Widget _buildRating(double rating) {
+    return Row(
+      children: List.generate(5, (index) {
+        if (index < rating.floor()) {
+          return const Icon(Icons.star, color: Colors.amber, size: 14);
+        } else if (index < rating) {
+          return const Icon(Icons.star_half, color: Colors.amber, size: 14);
+        } else {
+          return const Icon(Icons.star_border, color: Colors.amber, size: 14);
+        }
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final width = MediaQuery.of(context).size.width;
@@ -213,6 +227,7 @@ class HomeScreen extends ConsumerWidget {
                                   product.image,
                                   fit: BoxFit.contain,
                                   width: double.infinity,
+                                  errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported),
                                 ),
                               ),
                             ),
@@ -227,6 +242,8 @@ class HomeScreen extends ConsumerWidget {
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(fontSize: isDesktop ? 13 : 11),
                                   ),
+                                  const SizedBox(height: 4),
+                                  _buildRating(product.rating),
                                   const SizedBox(height: 4),
                                   Text(
                                     '\$${product.price.toStringAsFixed(2)}',
